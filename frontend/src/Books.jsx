@@ -7,12 +7,12 @@ function Books() {
   function handleAddBook() {
     const newBook = { name: bookName, author: "John", rating: 2 };
 
-    setBooks((c) => [...c, newBook]);
+    setBooks((b) => [...b, newBook]);
     setBookName("");
   }
 
   function handleRemoveBook(index) {
-    setBooks((c) => c.filter((_, i) => i !== index));
+    setBooks((b) => b.filter((_, i) => i !== index));
   }
 
   function handleNameChange(event) {
