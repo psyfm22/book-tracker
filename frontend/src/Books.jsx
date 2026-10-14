@@ -1,44 +1,102 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 function Books() {
+  const [title, setTitle] = useState("");
+  const [author, setAuthor] = useState("");
+  const [rating, setRating] = useState("");
+
   const [books, setBooks] = useState([]);
-  const [bookName, setBookName] = useState("");
 
-  function handleAddBook() {
-    const newBook = { name: bookName, author: "John", rating: 2 };
-
-    setBooks((b) => [...b, newBook]);
-    setBookName("");
+  async function fetchBooks() {
+    const response = await fetch("http://localhost:3000/books");
+    const data = await response.json();
+    setBooks(data);
   }
 
-  function handleRemoveBook(index) {
-    setBooks((b) => b.filter((_, i) => i !== index));
+  useEffect(() => {
+    fetchBooks().catch(console.error);
+  }, []);
+
+  async function handleAddBook(e) {
+    e.preventDefault();
+    const response = await fetch("http://localhost:3000/books", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title,
+        author,
+        rating: rating === "" ? null : Number(rating),
+      }),
+    });
+    if (!response.ok) {
+      alert("Failed to add book");
+      return;
+    }
+
+    setTitle("");
+    setAuthor("");
+    setRating("");
+
+    await fetchBooks();
   }
 
-  function handleNameChange(event) {
-    setBookName(event.target.value);
+  function handleTitleChange(event) {
+    setTitle(event.target.value);
+  }
+
+  function handleAuthorChange(event) {
+    setAuthor(event.target.value);
+  }
+
+  function handleRatingChange(event) {
+    setRating(event.target.value);
   }
 
   return (
     <div>
-      <h1>Books</h1>
+      <h1>Book Tracker</h1>
 
-      <ul>
-        {books.map((book, index) => (
-          <li key={index} onClick={() => handleRemoveBook(index)}>
-            {" "}
-            {book.name} {book.author} {book.rating}
-          </li>
-        ))}
-      </ul>
+      <form onSubmit={handleAddBook}>
+        <div>
+          <label>
+            Title:
+            <input value={title} onChange={handleTitleChange} required />
+          </label>
+        </div>
 
-      <input
-        type="text"
-        value={bookName}
-        onChange={handleNameChange}
-        placeholder="Book Title..."
-      ></input>
-      <button onClick={handleAddBook}>Add Book</button>
+        <div>
+          <label>
+            Author:
+            <input value={author} onChange={handleAuthorChange} required />
+          </label>
+        </div>
+
+        <div>
+          <label>
+            Rating:
+            <input
+              type="number"
+              min="0"
+              max="10"
+              step="1"
+              value={rating}
+              onChange={handleRatingChange}
+            />
+          </label>
+        </div>
+
+        <button type="submit">Add Book</button>
+      </form>
+
+      {books.map((book) => (
+        <div key={book.book_id}>
+          <h2>{book.title}</h2>
+          <p>Author: {book.author}</p>
+          <p>Rating: {book.rating ?? "Not rated"}</p>
+        </div>
+      ))}
     </div>
   );
 }
