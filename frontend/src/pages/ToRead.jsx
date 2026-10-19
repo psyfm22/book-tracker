@@ -11,6 +11,10 @@ function ToRead() {
     setBooks(data);
   }
 
+  useEffect(() => {
+    fetchBooks().catch(console.error);
+  }, []);
+
   async function handleAddBook(e) {
     e.preventDefault();
     const response = await fetch("http://localhost:3000/books/to-read", {
@@ -52,10 +56,6 @@ function ToRead() {
       alert("Could not connect to the server");
     }
   }
-
-  useEffect(() => {
-    fetchBooks().catch(console.error);
-  }, []);
 
   function handleTitleChange(event) {
     setTitle(event.target.value);

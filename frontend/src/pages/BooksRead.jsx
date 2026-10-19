@@ -41,6 +41,22 @@ function BooksRead() {
     await fetchBooks();
   }
 
+  async function handleDeleteBook(id) {
+    try {
+      const response = await fetch(`http://localhost:3000/books/read/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        alert("Failed to Delete book");
+        return;
+      }
+      await fetchBooks();
+    } catch (error) {
+      console.error("Error deleting book:", error);
+      alert("Could not connect to the server");
+    }
+  }
+
   function handleTitleChange(event) {
     setTitle(event.target.value);
   }
@@ -55,7 +71,7 @@ function BooksRead() {
 
   return (
     <div>
-      <h1>Book Tracker</h1>
+      <h1>Books Read</h1>
 
       <form onSubmit={handleAddBook}>
         <div>
@@ -96,6 +112,7 @@ function BooksRead() {
           </h2>
           <p>Author: {book.author}</p>
           <p>Rating: {book.rating ?? "Not rated"}</p>
+          <button onClick={() => handleDeleteBook(book.book_id)}>Delete</button>
         </div>
       ))}
     </div>
