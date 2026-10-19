@@ -7,7 +7,7 @@ function BooksRead() {
   const [books, setBooks] = useState([]);
 
   async function fetchBooks() {
-    const response = await fetch("http://localhost:3000/books");
+    const response = await fetch("http://localhost:3000/books/read");
     const data = await response.json();
     setBooks(data);
   }
@@ -18,7 +18,7 @@ function BooksRead() {
 
   async function handleAddBook(e) {
     e.preventDefault();
-    const response = await fetch("http://localhost:3000/books", {
+    const response = await fetch("http://localhost:3000/books/read", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
