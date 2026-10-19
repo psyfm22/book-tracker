@@ -34,6 +34,25 @@ function ToRead() {
     await fetchBooks();
   }
 
+  async function handleDeleteBook(id) {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/books/to-read/${id}`,
+        {
+          method: "DELETE",
+        },
+      );
+      if (!response.ok) {
+        alert("Failed to Delete book");
+        return;
+      }
+      await fetchBooks();
+    } catch (error) {
+      console.error("Error deleting book:", error);
+      alert("Could not connect to the server");
+    }
+  }
+
   useEffect(() => {
     fetchBooks().catch(console.error);
   }, []);
@@ -74,7 +93,8 @@ function ToRead() {
             {index + 1}. {book.title}
           </h2>
           <p>Author: {book.author}</p>
-          <p>Rating: {book.date_added}</p>
+          <p>Date Added: {book.date_added}</p>
+          <button onClick={() => handleDeleteBook(book.book_id)}>Delete</button>
         </div>
       ))}
     </div>

@@ -45,6 +45,33 @@ app.get("/books/to-read", async (req, res) => {
     }
 });
 
+app.delete("/books/to-read/:id", async (req, res) => {
+    try {
+        const bookId = req.params.id;
+        
+        const [result] = await pool.query(
+            "DELETE FROM books_to_read WHERE book_id = ?",
+            [bookId]
+        );
+
+        if (result.affectedRows === 0) {
+            return res.status(404).json({
+                error: "Book not found"
+            });
+        }
+        res.json({
+            message: "Book deleted successfully"
+        });
+        
+
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: "Failed to delete book"
+        });
+    }
+});
+
 
 
 app.post("/books/read", async (req, res) => {
