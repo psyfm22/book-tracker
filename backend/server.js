@@ -4,8 +4,6 @@ const pool = require("./db");
 
 const app = express();
 
-
-
 app.use(cors({
     origin: "http://localhost:5173"
 }));
@@ -20,7 +18,7 @@ app.get("/", (_, res) => {
 app.get("/books", async (req, res) => {
     try {
         const [books] = await pool.query(
-            "SELECT * FROM books_read"
+            "SELECT title, author, rating FROM books_read ORDER BY rating DESC;"
         );
 
         res.json(books);
