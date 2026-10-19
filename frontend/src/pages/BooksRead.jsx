@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 
-function Books() {
+function BooksRead() {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [rating, setRating] = useState("");
-
   const [books, setBooks] = useState([]);
 
   async function fetchBooks() {
@@ -90,9 +89,11 @@ function Books() {
         <button type="submit">Add Book</button>
       </form>
 
-      {books.map((book) => (
+      {books.map((book, index) => (
         <div key={book.book_id}>
-          <h2>{book.title}</h2>
+          <h2>
+            {index + 1}. {book.title}
+          </h2>
           <p>Author: {book.author}</p>
           <p>Rating: {book.rating ?? "Not rated"}</p>
         </div>
@@ -101,4 +102,4 @@ function Books() {
   );
 }
 
-export default Books;
+export default BooksRead;
