@@ -18,7 +18,7 @@ app.get("/", (_, res) => {
 app.get("/books/read", async (req, res) => {
     try {
         const [books] = await pool.query(
-            "SELECT title, author, rating FROM books_read ORDER BY rating DESC;"
+            "SELECT book_id, title, author, rating FROM books_read ORDER BY rating DESC;"
         );
 
         res.json(books);
