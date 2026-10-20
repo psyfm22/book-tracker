@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import BooksRead from "./pages/BooksRead";
 import ToRead from "./pages/ToRead";
 import AddBook from "./pages/AddBook";
+import Book from "./pages/Book";
 
 function App() {
   return (
@@ -22,6 +23,8 @@ function App() {
         <Route path="/read" element={<BooksRead />} />
         <Route path="/to-read" element={<ToRead />} />
         <Route path="/add-book" element={<AddBook />} />
+        <Route path="/read/:id" element={<Book />} />
+        <Route path="/to-read/:id" element={<Book />} />
       </Routes>
     </BrowserRouter>
   );

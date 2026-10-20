@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router";
 
 function ToRead() {
   const [books, setBooks] = useState([]);
@@ -38,9 +39,11 @@ function ToRead() {
 
       {books.map((book, index) => (
         <div key={book.book_id}>
-          <h2>
-            {index + 1}. {book.title}
-          </h2>
+          <Link to={`/to-read/${book.book_id}`}>
+            <h2>
+              {index + 1}. {book.title}
+            </h2>
+          </Link>
           <p>Author: {book.author}</p>
           <p>Date Added: {book.date_added}</p>
           <button onClick={() => handleDeleteBook(book.book_id)}>Delete</button>
