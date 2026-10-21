@@ -15,6 +15,34 @@ app.get("/", (_, res) => {
     res.send("Book Tracker API is running!");
 });
 
+
+app.get("/books/read/:id", async (req, res) => {
+    try {
+            const bookId = req.params.id;
+
+            const [books] = await pool.query(
+            `SELECT book_id, user_id, title, author, rating,
+                    date_finished, notes
+             FROM books_read
+             WHERE book_id = ?`,
+            [bookId]
+            );
+
+            if (books.length === 0) {
+                return res.status(404).json({
+                    error: "Book not found"
+                });
+            }
+
+            res.json(books[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: "Failed to fetch books"
+        });
+    }
+});
+
 app.get("/books/read", async (req, res) => {
     try {
         const [books] = await pool.query(
@@ -22,6 +50,35 @@ app.get("/books/read", async (req, res) => {
         );
 
         res.json(books);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: "Failed to fetch books"
+        });
+    }
+});
+
+
+
+app.get("/books/to-read/:id", async (req, res) => {
+    try {
+            const bookId = req.params.id;
+
+            const [books] = await pool.query(
+            `SELECT book_id, user_id, title, author,
+                    date_added, notes
+             FROM books_to_read
+             WHERE book_id = ?`,
+            [bookId]
+            );
+
+            if (books.length === 0) {
+                return res.status(404).json({
+                    error: "Book not found"
+                });
+            }
+
+            res.json(books[0]);
     } catch (error) {
         console.error(error);
         res.status(500).json({
