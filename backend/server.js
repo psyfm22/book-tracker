@@ -205,6 +205,29 @@ app.post("/books/to-read", async (req, res) => {
     }
 });
 
+app.put("/books/read/:id", async (req, res) => {
+  try {
+    const bookId = req.params.id;
+    const { title, author, rating } = req.body;
+
+    const [result] = await pool.query(
+      `UPDATE books_read
+       SET title = ?, author = ?, rating = ?
+       WHERE book_id = ?`,
+      [title, author, rating === "" ? null : rating, bookId]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: "Book not found" });
+    }
+
+    res.json({ message: "Book updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to update book" });
+  }
+});
+
 
 app.listen(3000, () => {
     console.log("Server is running on port 3000");

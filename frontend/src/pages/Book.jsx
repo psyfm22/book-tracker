@@ -3,10 +3,15 @@ import { useEffect, useState } from "react";
 
 function Book() {
   const { id } = useParams();
-  const [book, setBook] = useState();
+  const [book, setBook] = useState({
+    title: "",
+    author: "",
+    rating: "",
+    date_finished: "",
+    notes: "",
+  });
 
   async function getBook() {
-    console.log("Here now");
     try {
       const response = await fetch(`http://localhost:3000/books/read/${id}`);
       const data = await response.json();
@@ -17,6 +22,33 @@ function Book() {
     }
   }
 
+  async function updateBook() {
+    try {
+      const response = await fetch(`http://localhost:3000/books/read/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: book.title,
+          author: book.author,
+          rating: book.rating,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to update book");
+      }
+
+      alert("Book updated successfully!");
+    } catch (error) {
+      console.error("Error updating book:", error);
+      alert("Could not update book");
+    }
+  }
+
   useEffect(() => {
     //This is to protect if there isn't an id in the params
     if (id) {
@@ -24,18 +56,22 @@ function Book() {
     }
   }, [id]);
 
-  if (book) {
-    <div>
-      <h1> Book</h1>
-      <div>
-        <h2>{book.title}</h2>
-        <h2>{book.author}</h2>
-        <h2>{book.rating}</h2>
-        <h2>{book.date_finished}</h2>
-        <h2>{book.notes}</h2>
-      </div>
-    </div>;
-  } else {
+  function handleUpdateBook(event) {
+    event.preventDefault();
+    console.log("Updating book");
+    updateBook();
+  }
+
+  function handleChange(e) {
+    const { name, value } = e.target;
+
+    setBook((b) => ({
+      ...b,
+      [name]: value,
+    }));
+  }
+
+  if (!book) {
     <div>
       <h1>Book Loading...</h1>
     </div>;
@@ -44,15 +80,55 @@ function Book() {
   return (
     <div>
       <h1> Book</h1>
-      {book && (
+
+      <form onSubmit={handleUpdateBook}>
         <div>
-          <h2>{book.title}</h2>
-          <h2>{book.author}</h2>
-          <h2>{book.rating}</h2>
-          <h2>{book.date_finished}</h2>
-          <h2>{book.notes}</h2>
+          <label>
+            Title:
+            <input
+              name="title"
+              value={book.title}
+              onChange={handleChange}
+              required
+            />
+          </label>
         </div>
-      )}
+        <div>
+          <label>
+            Author:
+            <input
+              name="author"
+              value={book.author}
+              onChange={handleChange}
+              required
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            Rating:
+            <input
+              type="number"
+              name="rating"
+              min="0"
+              max="10"
+              step="1"
+              value={book.rating}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <button onClick={handleUpdateBook}>Update Book</button>
+      </form>
+
+      <div>
+        <h2>{book.title}</h2>
+        <h2>{book.author}</h2>
+        <h2>{book.rating}</h2>
+        <h2>{book.date_finished}</h2>
+        <h2>{book.notes}</h2>
+      </div>
     </div>
   );
 }
