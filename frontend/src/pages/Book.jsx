@@ -10,6 +10,7 @@ function Book() {
     date_finished: "",
     notes: "",
   });
+  const [isUpdating, setIsUpdating] = useState(false);
 
   async function getBook() {
     try {
@@ -46,6 +47,8 @@ function Book() {
     } catch (error) {
       console.error("Error updating book:", error);
       alert("Could not update book");
+    } finally {
+      setIsUpdating(false);
     }
   }
 
@@ -58,7 +61,7 @@ function Book() {
 
   function handleUpdateBook(event) {
     event.preventDefault();
-    console.log("Updating book");
+    setIsUpdating(true);
     updateBook();
   }
 
@@ -119,16 +122,10 @@ function Book() {
           </label>
         </div>
 
-        <button onClick={handleUpdateBook}>Update Book</button>
+        <button onClick={handleUpdateBook} disabled={isUpdating}>
+          {isUpdating ? "Updating..." : "Update Book"}
+        </button>
       </form>
-
-      <div>
-        <h2>{book.title}</h2>
-        <h2>{book.author}</h2>
-        <h2>{book.rating}</h2>
-        <h2>{book.date_finished}</h2>
-        <h2>{book.notes}</h2>
-      </div>
     </div>
   );
 }
