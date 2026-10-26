@@ -1,8 +1,12 @@
-import { useParams } from "react-router";
+import { useParams, useLocation } from "react-router";
 import { useEffect, useState } from "react";
 
 function Book() {
   const { id } = useParams();
+
+  const location = useLocation();
+  const isRead = location.pathname.startsWith("/read");
+
   const [book, setBook] = useState({
     title: "",
     author: "",
@@ -54,6 +58,9 @@ function Book() {
 
   useEffect(() => {
     //This is to protect if there isn't an id in the params
+
+    console.log(isRead);
+
     if (id) {
       getBook();
     }
