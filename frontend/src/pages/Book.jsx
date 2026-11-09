@@ -2,25 +2,32 @@ import { useParams, useLocation } from "react-router";
 import { useEffect, useState } from "react";
 
 function Book() {
-  const { id } = useParams();
-
   const location = useLocation();
   const isRead = location.pathname.startsWith("/read");
 
-  const [book, setBook] = useState({
+  const { id } = useParams();
+
+  const [readBook, setReadBook] = useState({
     title: "",
     author: "",
     rating: "",
     date_finished: "",
     notes: "",
   });
+  const [toReadBook, setToReadBook] = useState({
+    title: "",
+    author: "",
+    date_added: "",
+    notes: "",
+  });
+
   const [isUpdating, setIsUpdating] = useState(false);
 
   async function getBook() {
     try {
       const response = await fetch(`http://localhost:3000/books/read/${id}`);
       const data = await response.json();
-      setBook(data);
+      setReadBook(data);
     } catch (error) {
       console.error("Error deleting book:", error);
       alert("Could not Find book to the server");
@@ -35,9 +42,9 @@ function Book() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          title: book.title,
-          author: book.author,
-          rating: book.rating,
+          title: readBook.title,
+          author: readBook.author,
+          rating: readBook.rating,
         }),
       });
 
@@ -75,13 +82,13 @@ function Book() {
   function handleChange(e) {
     const { name, value } = e.target;
 
-    setBook((b) => ({
+    setReadBook((b) => ({
       ...b,
       [name]: value,
     }));
   }
 
-  if (!book) {
+  if (!readBook && !toReadBook) {
     <div>
       <h1>Book Loading...</h1>
     </div>;
@@ -97,7 +104,7 @@ function Book() {
             Title:
             <input
               name="title"
-              value={book.title}
+              value={readBook.title}
               onChange={handleChange}
               required
             />
@@ -108,7 +115,7 @@ function Book() {
             Author:
             <input
               name="author"
-              value={book.author}
+              value={readBook.author}
               onChange={handleChange}
               required
             />
@@ -123,7 +130,7 @@ function Book() {
               min="0"
               max="10"
               step="1"
-              value={book.rating}
+              value={readBook.rating}
               onChange={handleChange}
             />
           </label>
